@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">fishpish</string>
+
+    <string name="title_activity_settings">Settings</string>
+    <string name="btn_settings">Settings</string>
+    <string name="btn_play">Play</string>
+    <string name="backVolume">Background Music Vol</string>
+</resources>
