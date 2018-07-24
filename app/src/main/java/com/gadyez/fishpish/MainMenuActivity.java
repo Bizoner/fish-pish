@@ -24,6 +24,7 @@ public class MainMenuActivity extends AppCompatActivity {
         MusicController.stop();
     }
 
+    @Override
     protected void onResume() {
         super.onResume();
         MusicController.resume();

@@ -36,7 +36,20 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.v("curr",""+current);
                 MusicController.setVolume(current);
             }
+
         });
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MusicController.stop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MusicController.resume();
     }
 }

@@ -32,4 +32,16 @@ public class GameActivity extends AppCompatActivity {
 
         super.onStop();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MusicController.stop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MusicController.resume();
+    }
 }
