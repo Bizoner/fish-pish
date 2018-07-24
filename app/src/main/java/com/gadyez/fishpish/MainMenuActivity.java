@@ -18,6 +18,16 @@ public class MainMenuActivity extends AppCompatActivity {
         startActivity(new Intent(this, SettingsActivity.class));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MusicController.stop();
+    }
+
+    protected void onResume() {
+        super.onResume();
+        MusicController.resume();
+    }
     public void onPlayClick(View view) { startActivity(new Intent(this, GameActivity.class)); }
 
 }
