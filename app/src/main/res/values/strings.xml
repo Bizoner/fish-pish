@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">fishpish</string>
+    <string name="app_name">FishPish</string>
 
     <string name="title_activity_settings">Settings</string>
     <string name="btn_settings">Settings</string>
