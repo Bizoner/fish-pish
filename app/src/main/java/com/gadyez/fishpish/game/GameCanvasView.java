@@ -1,5 +1,6 @@
 package com.gadyez.fishpish.game;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -190,9 +191,6 @@ public class GameCanvasView extends View {
 
                 }
             }
-
-
-            invalidate();
         }
 
     }
@@ -237,7 +235,7 @@ public class GameCanvasView extends View {
             }
 
         }
-
+        invalidate();
     }
 
     class FishingRod {
