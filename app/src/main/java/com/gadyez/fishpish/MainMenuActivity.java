@@ -25,6 +25,9 @@ public class MainMenuActivity extends AppCompatActivity {
     public void onSettingsClick(View view) {
         startActivity(new Intent(this, SettingsActivity.class));
     }
+    public void onLeaderBoardClick(View view) {
+        startActivity(new Intent(this, LeaderBoardActivity.class));
+    }
 
     @Override
     protected void onPause() {

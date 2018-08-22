@@ -104,7 +104,7 @@ public class Fish {
     }
 
     public double getScore() {
-        return factor;
+        return factor*10;
     }
 
     public boolean isHooked() {

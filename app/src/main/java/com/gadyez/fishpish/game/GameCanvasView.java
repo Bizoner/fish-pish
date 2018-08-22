@@ -12,13 +12,17 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
+import com.gadyez.fishpish.GameActivity;
 import com.gadyez.fishpish.PixelCalc;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class GameCanvasView extends View {
     public static final int FPS_PERIOD = 1000 / 60;
@@ -38,14 +42,16 @@ public class GameCanvasView extends View {
     private int mRodPace;
     private float mTouchDownX;
     private float mRodX;
+    private Paint mScoreRect;
     private Paint mScorePaint;
-
+    private MyCountdownTimer timer;
+    long currentTime;
 
 //    private float mWaterHeight;
 
     private final ArrayList<Fish> mFishList = new ArrayList<>();
     private TimerTask mFishTask;
-    private double mCurrentScore;
+    private int mCurrentScore;
 
 
     public GameCanvasView(Context context) {
@@ -69,6 +75,8 @@ public class GameCanvasView extends View {
     private void init() {
         // nothing yet
 
+        timer = new MyCountdownTimer(60000,1000);
+        timer.start();
 
         mRodPace = (int) PixelCalc.convertDpToPixel(2, getContext());
 
@@ -76,9 +84,14 @@ public class GameCanvasView extends View {
         mRodPaint.setColor(Color.BLACK);
         mRodPaint.setStrokeWidth(6);
 
+        mScoreRect = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mScoreRect.setStyle(Paint.Style.FILL);
+        mScoreRect.setColor(Color.BLUE);
+
         mScorePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mScorePaint.setColor(Color.BLACK);
-        mScorePaint.setTextSize(50);
+        mScorePaint.setColor(Color.WHITE);
+        mScorePaint.setTextSize(70);
+
 
 
         setOnTouchListener(new OnTouchListener() {
@@ -171,7 +184,6 @@ public class GameCanvasView extends View {
                             mCurrentScore += fish.getScore();
                             Log.v("score",String.valueOf(mCurrentScore));
                             fish.setHooked(false);
-
                         }
 
                         mFishList.remove(i);
@@ -215,25 +227,42 @@ public class GameCanvasView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        currentTime = timer.getTimeLeft();
+        if (timer.isFinished()) {
+            canvas.drawRect(
+                    getLeft()+(getRight()-getLeft())/6,
+                    getTop()+(getBottom()-getTop())/4,
+                    getRight()-(getRight()-getLeft())/6,
+                    getBottom()-(getBottom()-getTop())/4,mScoreRect);
+            canvas.drawText("YOUR SCORE:",mCanvasWidth/2 - 200,mCanvasHeight/2 - 200,mScorePaint);
+            canvas.drawText(String.valueOf(mCurrentScore),mCanvasWidth/2 - 50,mCanvasHeight/2,mScorePaint);
 
-        if (!mSizesCalculated) return;
+        } else {
+            if (!mSizesCalculated) return;
 
-
-        // draw background
+            // draw background
 //        canvas.drawColor(Color.BLUE);
 
-        // draw fishing rod
-        canvas = mFishingRod.onDraw(canvas);
+            // draw fishing rod
+            canvas = mFishingRod.onDraw(canvas);
+            canvas.drawRect(0,20, 300,140,mScoreRect);
+            canvas.drawRect(mCanvasWidth - 300,20, mCanvasWidth,140,mScoreRect);
+            canvas.drawText(String.valueOf(mCurrentScore),40,100,mScorePaint);
 
-        canvas.drawText(String.valueOf(mCurrentScore),40,40,mScorePaint);
+            String formattedTime = String.format("%d:%d",
+                    TimeUnit.MILLISECONDS.toMinutes(currentTime),
+                    TimeUnit.MILLISECONDS.toSeconds(currentTime) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentTime))
+            );
+            canvas.drawText(String.valueOf(formattedTime),mCanvasWidth - 140,100,mScorePaint);
 
+            synchronized (mFishList) {
 
-        synchronized (mFishList) {
+                for (int i = 0; i < mFishList.size(); i++) {
+                    canvas = mFishList.get(i).onDraw(canvas);
+                }
 
-            for (int i = 0; i < mFishList.size(); i++) {
-                canvas = mFishList.get(i).onDraw(canvas);
             }
-
         }
         invalidate();
     }
