@@ -62,7 +62,7 @@ public class Fish {
                 // fished reached top of screen
                 rectangle.offsetTo(0 - rectangle.width(), 0);
             } else {
-                rectangle.offsetTo(rectangle.left, rodHeight);
+                rectangle.offsetTo(rectangle.left, rodHeight - 80);
 //                rectangle.offset();
 
             }

@@ -162,6 +162,8 @@ public class GameCanvasView extends View {
         mTimer.cancel();
     }
 
+    public boolean isRodBusy = false;
+
     private void onCalculateRodAndFish() {
 
         if (mSizesCalculated) {
@@ -175,29 +177,28 @@ public class GameCanvasView extends View {
                 fish.onCalculateFrame(mFishingRod.mCurrentLength);
 
                 synchronized (mFishList) {
-
                     boolean removed = false;
 
                     if (fish.isDone()) {
                         fish.recycle();
                         if (fish.isHooked()) {
+                            isRodBusy = false;
                             mCurrentScore += fish.getScore();
                             Log.v("score",String.valueOf(mCurrentScore));
                             fish.setHooked(false);
                         }
 
                         mFishList.remove(i);
-
                         removed = true;
 
                     }
 
                     if (!removed) {
 
-                        if (fish.isTouching(mFishingRod)) {
+                        if (!isRodBusy && fish.isTouching(mFishingRod)) {
 
                             fish.setHooked(true);
-
+                            isRodBusy = true;
                         }
                     }
 
@@ -334,7 +335,7 @@ public class GameCanvasView extends View {
 
 
         public boolean isContained(Rect rectangle) {
-            return rectangle.contains((int) mRodX, mCurrentLength);
+            return rectangle.contains((int) mRodX+20 , mCurrentLength - 50);
         }
     }
 }
